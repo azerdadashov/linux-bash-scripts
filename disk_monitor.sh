@@ -1,16 +1,31 @@
 #!/bin/bash
 
-# ==============================
-# Disk Usage Monitoring Script
-# ==============================
+# ==========================================
+# Production-Ready Disk Monitoring Script
+# ==========================================
+
+set -e
 
 THRESHOLD=80
-CURRENT_USAGE=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
+LOG_FILE="/tmp/backups/disk_monitor.log"
 
-echo "Current disk usage: $CURRENT_USAGE%"
+# Function: Log messages
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
+}
 
-if [ "$CURRENT_USAGE" -gt "$THRESHOLD" ]; then
-    echo "WARNING: Disk usage exceeded $THRESHOLD%!"
-else
-    echo "Disk usage is within normal limits."
-fi
+log_message "Disk monitoring started."
+
+# Check all mounted filesystems except tmpfs/devtmpfs
+df -h --output=target,pcent | tail -n +2 | while read mount usage; do
+    usage_percent=$(echo "$usage" | tr -d '%')
+
+    if [ "$usage_percent" -ge "$THRESHOLD" ]; then
+        log_message "WARNING: $mount is at $usage"
+        echo "WARNING: $mount usage is $usage"
+    else
+        log_message "OK: $mount is at $usage"
+    fi
+done
+
+log_message "Disk monitoring finished."
