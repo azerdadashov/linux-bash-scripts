@@ -1,24 +1,42 @@
 #!/bin/bash
 
-# ==============================
-# Simple Linux Backup Script
-# ==============================
+# ==========================================
+# Production-Ready Backup Script
+# ==========================================
 
+set -e
+
+# Variables
 SOURCE_DIR="/home"
 BACKUP_DIR="/tmp/backups"
 DATE=$(date +%Y-%m-%d_%H-%M-%S)
 BACKUP_FILE="$BACKUP_DIR/home-backup-$DATE.tar.gz"
+LOG_FILE="$BACKUP_DIR/backup.log"
 
-# Create backup directory if not exists
+# Function: Log messages
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
+}
+
+# Create backup directory if it does not exist
 mkdir -p "$BACKUP_DIR"
 
-# Create compressed archive
-tar -czf "$BACKUP_FILE" "$SOURCE_DIR"
+log_message "Backup started."
 
-# Check if backup was successful
-if [ $? -eq 0 ]; then
-    echo "Backup completed successfully!"
-    echo "Backup file: $BACKUP_FILE"
-else
-    echo "Backup failed!"
+# Check if source directory exists
+if [ ! -d "$SOURCE_DIR" ]; then
+    log_message "ERROR: Source directory $SOURCE_DIR does not exist."
+    exit 1
 fi
+
+# Create compressed archive
+if tar -czf "$BACKUP_FILE" "$SOURCE_DIR"; then
+    log_message "Backup successful: $BACKUP_FILE"
+    echo "Backup completed successfully."
+else
+    log_message "ERROR: Backup failed."
+    echo "Backup failed."
+    exit 1
+fi
+
+log_message "Backup process finished."
