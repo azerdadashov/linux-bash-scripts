@@ -1,26 +1,65 @@
 # Linux Bash Scripts
 
-This repository contains basic system administration scripts used in Linux environments.
+A small collection of production-style Linux system administration scripts with basic logging and validation.  
+Tested in lab environments on Ubuntu/Linux.
 
-## Included Scripts
+## Scripts
 
-### 1. backup.sh
-Creates a compressed backup of the /home directory with timestamp.
+### 1) backup.sh
+Creates a compressed backup archive of `/home` with a timestamp and writes logs.
 
-### 2. disk_monitor.sh
-Monitors disk usage and alerts if usage exceeds defined threshold.
+**What it does:**
+- Creates backup directory if missing
+- Validates source directory exists
+- Creates `.tar.gz` archive
+- Logs actions to a file
 
-### 3. user_create.sh
-Creates a new system user interactively.
+**Default paths:**
+- Backup directory: `/tmp/backups`
+- Log file: `/tmp/backups/backup.log`
 
 ---
 
-## Usage
+### 2) disk_monitor.sh
+Checks disk usage across mounted filesystems and alerts if usage exceeds a threshold.
+
+**What it does:**
+- Scans mounted filesystems
+- Compares usage to threshold (default: `80%`)
+- Prints warnings and logs results
+
+**Default paths:**
+- Log file: `/tmp/backups/disk_monitor.log`
+
+---
+
+### 3) user_create.sh
+Creates a Linux user interactively with validation, optional group assignment, and logging.
+
+**What it does:**
+- Requires `sudo` / root privileges
+- Validates username format
+- Creates user with home directory and `/bin/bash`
+- Optionally adds user to an existing group
+- Prompts to set password
+- Logs actions
+
+**Default paths:**
+- Log file: `/tmp/backups/user_create.log`
+
+---
+
+## Requirements
+
+- Linux system (Ubuntu/Debian/CentOS etc.)
+- Bash shell
+- Permissions:
+  - `user_create.sh` must be run with `sudo`
+  - Others can be run as a normal user (depending on access to directories)
+
+## Setup
 
 Make scripts executable:
 
-chmod +x script_name.sh
-
-Run script:
-
-./script_name.sh
+```bash
+chmod +x backup.sh disk_monitor.sh user_create.sh
