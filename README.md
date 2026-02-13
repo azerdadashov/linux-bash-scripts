@@ -4,16 +4,23 @@ This repository contains basic system administration scripts used in Linux envir
 
 ## Included Scripts
 
-- backup.sh → Creates compressed backup of /home directory
-- disk_monitor.sh → Monitors disk usage
-- user_create.sh → Creates new system users
+### 1. backup.sh
+Creates a compressed backup of the /home directory with timestamp.
+
+### 2. disk_monitor.sh
+Monitors disk usage and alerts if usage exceeds defined threshold.
+
+### 3. user_create.sh
+Creates a new system user interactively.
+
+---
 
 ## Usage
 
-Make script executable:
+Make scripts executable:
 
 chmod +x script_name.sh
 
-Run:
+Run script:
 
 ./script_name.sh
